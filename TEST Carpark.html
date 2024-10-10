@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำนวณค่าจอดรถ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>คำนวณค่าจอดรถ</h1>
+
+    <label for="licensePlate">ทะเบียนรถ:</label>
+    <input type="text" id="licensePlate" placeholder="กรอกทะเบียนรถ">
+
+    <label for="entryTime">เวลาเข้า:</label>
+    <input type="datetime-local" id="entryTime">
+
+    <label for="exitTime">เวลาออก:</label>
+    <input type="datetime-local" id="exitTime">
+
+    <label for="freeStamp">ตราประทับจอดฟรี:</label>
+    <select id="freeStamp">
+        <option value="0">ไม่มี</option>
+        <option value="30">30 นาที</option>
+        <option value="60">60 นาที</option>
+        <option value="120">120 นาที</option>
+    </select>
+
+    <button onclick="calculateFee()">คำนวณ</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+function calculateFee() {
+    const entryTime = new Date(document.getElementById('entryTime').value);
+    const exitTime = new Date(document.getElementById('exitTime').value);
+    const freeStamp = parseInt(document.getElementById('freeStamp').value);
+
+    if (isNaN(entryTime.getTime()) || isNaN(exitTime.getTime())) {
+        alert("กรุณาเลือกเวลาเข้าและเวลาออก");
+        return;
+    }
+
+    const timeDiff = exitTime - entryTime; 
+    const totalMinutes = Math.floor(timeDiff / (1000 * 60)); 
+    const totalHours = Math.max(0, Math.ceil((totalMinutes - freeStamp) / 60)); 
+    const parkingFee = totalHours * 60; 
+
+    document.getElementById('result').innerHTML = `
+        <p>รวมเวลาที่จอด: ${Math.floor(totalMinutes / 60)} ชั่วโมง ${totalMinutes % 60} นาที</p>
+        <p>ตราประทับจอดฟรี: ${freeStamp} นาที</p>
+        <p>ค่าจอดรถ: ${parkingFee} บาท</p>
+    `;
+}
+</script>
+
+</body>
+</html>
